@@ -11,6 +11,7 @@ namespace Code.Config
         public sealed class SpriteSequence
         {
             public AnimState Track;
+            public float AnimSpeed;
             public List<Sprite> Sprites = new List<Sprite>();
         }
 

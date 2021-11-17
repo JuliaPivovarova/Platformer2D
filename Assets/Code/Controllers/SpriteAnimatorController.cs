@@ -45,17 +45,18 @@ namespace Code.Controllers
             _config = config;
         }
 
-        public void StartAnimation(SpriteRenderer spriteRenderer, AnimState track, bool loop, float speed)
+        public void StartAnimation(SpriteRenderer spriteRenderer, AnimState track, bool loop)
         {
             if (_activeAnimation.TryGetValue(spriteRenderer, out var animation))
             {
                 animation.Sleep = false;
                 animation.Loop = loop;
-                animation.Speed = speed;
+                animation.Speed = _config.Sequences.Find(sequence => sequence.Track == track).AnimSpeed;
                 if (animation.Track != track)
                 {
                     animation.Track = track;
                     animation.Sprites = _config.Sequences.Find(sequence => sequence.Track == track).Sprites;
+                    animation.Speed = _config.Sequences.Find(sequence => sequence.Track == track).AnimSpeed;
                     animation.Counter = 0;
                 }
             }
@@ -64,9 +65,9 @@ namespace Code.Controllers
                 _activeAnimation.Add(spriteRenderer, new Animation()
                 {
                     Loop = loop,
-                    Speed = speed,
                     Track = track,
-                    Sprites =  _config.Sequences.Find(sequence => sequence.Track == track).Sprites
+                    Sprites =  _config.Sequences.Find(sequence => sequence.Track == track).Sprites,
+                    Speed = _config.Sequences.Find(sequence => sequence.Track == track).AnimSpeed
                 });
             }
         }
