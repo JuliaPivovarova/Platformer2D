@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sequences:
   - Track: 0
+    AnimSpeed: 10
     Sprites:
     - {fileID: 6664195757074223314, guid: 2de5ffe977b56e349a99835b25cf3238, type: 3}
     - {fileID: 6014931395803470634, guid: 2de5ffe977b56e349a99835b25cf3238, type: 3}
@@ -28,6 +29,7 @@ MonoBehaviour:
     - {fileID: -6816863111707041702, guid: 2de5ffe977b56e349a99835b25cf3238, type: 3}
     - {fileID: 3800384936974750863, guid: 2de5ffe977b56e349a99835b25cf3238, type: 3}
   - Track: 1
+    AnimSpeed: 10
     Sprites:
     - {fileID: -1726516864142331728, guid: c9d0015c8e7fab748ad98d123a573007, type: 3}
     - {fileID: -8611248298811900512, guid: c9d0015c8e7fab748ad98d123a573007, type: 3}
@@ -48,5 +50,13 @@ MonoBehaviour:
     - {fileID: -5874071934709340760, guid: c9d0015c8e7fab748ad98d123a573007, type: 3}
     - {fileID: 625585488909796317, guid: c9d0015c8e7fab748ad98d123a573007, type: 3}
   - Track: 2
+    AnimSpeed: 10
     Sprites:
     - {fileID: -4173142605327366845, guid: 0a6a8fbe69b26b848835dc1171772ffd, type: 3}
+  - Track: 3
+    AnimSpeed: 10
+    Sprites:
+    - {fileID: 8078373976352018818, guid: 0de5f361394519147985365e14f26891, type: 3}
+    - {fileID: -3531749524509838976, guid: 0de5f361394519147985365e14f26891, type: 3}
+    - {fileID: -5393295869164335080, guid: 0de5f361394519147985365e14f26891, type: 3}
+    - {fileID: 2647678885686509102, guid: 0de5f361394519147985365e14f26891, type: 3}
