@@ -1,4 +1,5 @@
-﻿using Code.Config;
+﻿using System.Collections.Generic;
+using Code.Config;
 using Code.Controllers;
 using Code.View;
 using UnityEngine;
@@ -8,17 +9,26 @@ namespace Code
     public class Main: MonoBehaviour
     {
         [SerializeField] private SpriteAnimatorConfig playerConfig;
+        [SerializeField] private SpriteAnimatorConfig coinsAnimCfg;
         [SerializeField] private LevelObjectsView playerView;
         [SerializeField] private float groundMoveSpeed = 1f;
         [SerializeField] private GameObject player;
+        [SerializeField] private CannonView cannonView;
+        [SerializeField] private List<LevelObjectsView> coinsViews;
 
         private SpriteAnimatorController _playerAnimator;
+        private CameraController _cameraController;
+        private SpriteAnimatorController _coinAnimator;
         private PlayerController _playerController;
         private GroundMove _groundMove;
+        private BulletEmitterController _bulletEmitterController;
+        private CannonAimController _cannon;
+        private CoinsController _coinsController;
 
         private void Start()
         {
             playerConfig = Resources.Load<SpriteAnimatorConfig>("PlayerAnimSfg");
+            coinsAnimCfg = Resources.Load<SpriteAnimatorConfig>("CoinAnimCfg");
             _groundMove = new GroundMove(player, groundMoveSpeed);
             
 
@@ -27,14 +37,29 @@ namespace Code
                 _playerAnimator = new SpriteAnimatorController(playerConfig);
             }
             
+            if (coinsAnimCfg)
+            {
+                _coinAnimator = new SpriteAnimatorController(coinsAnimCfg);
+            }
+            
             _playerAnimator.StartAnimation(playerView.spriteRenderer, AnimState.Idle, true);
             _playerController = new PlayerController(_groundMove, playerView, _playerAnimator);
+            _cameraController = new CameraController(playerView.transform, Camera.main.transform);
+            
+            //_cannon = new CannonAimController (cannonView._muzzleTransform, playerView.transform);
+            //_bulletEmitterController = new BulletEmitterController(cannonView._bullets, cannonView._emitterTransform);
+
+            _coinsController = new CoinsController(playerView, coinsViews, _coinAnimator);
         }
 
         private void Update()
         {
             _playerAnimator.Update();
             _playerController.Update();
+            //_cannon.Update();
+            //_bulletEmitterController.Update();
+            //_coinAnimator.Update();
+            _cameraController.Update();
         }
     }
 }

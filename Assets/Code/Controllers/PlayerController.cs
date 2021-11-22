@@ -13,9 +13,11 @@ namespace Code.Controllers
         
         private float _xAxisInput;
         private bool _isJump;
+        private bool _isdoubleJump = false;
+        private bool _isHoldingAtVerticale = false;
         private bool _isCrouch;
         
-        private float _walkSpeed = 3f;
+        private float _walkSpeed = 160f;
         private float _movingTreshold = 0.1f; 
         
         private Vector3 _leftScale = new Vector3(-1, 1, 1);
@@ -25,29 +27,26 @@ namespace Code.Controllers
         
         private float _jumpSpeed = 9f;
         private float _jumpTreshold = 1f;
-        private float _g = -9.8f;
-        private float _groundedLevel = 0f;
         private float _yVelocity;
+        private float _xVelocity;
 
         private LevelObjectsView _view;
         private SpriteAnimatorController _spriteAnimator;
+        private readonly ContactPooler _contactPooler;
 
         public PlayerController(IMove move, LevelObjectsView view, SpriteAnimatorController spriteAnimator)
         {
             _move = move;
             _view = view;
             _spriteAnimator = spriteAnimator;
+            _contactPooler = new ContactPooler(_view.collider);
         }
 
         private void MoveTorwards()
         {
-            _view.transform.position += Vector3.right * (Time.deltaTime * _walkSpeed * (_xAxisInput < 0 ? -1 : 1));
+            _xVelocity = Time.fixedDeltaTime * _walkSpeed * (_xAxisInput < 0 ? -1 : 1);
+            _view.rigidbody.velocity = _view.rigidbody.velocity.Change(x: _xVelocity);
             _view.transform.localScale = (_xAxisInput < 0 ? _leftScale : _rightScale);
-        }
-        
-        public bool IsGrounded()
-        {
-            return _view.transform.position.y <= _groundedLevel && _yVelocity <= 0;
         }
 
         //public void Move()
@@ -58,6 +57,7 @@ namespace Code.Controllers
         public void Update()
         {
             _spriteAnimator.Update();
+            _contactPooler.Update();
             _xAxisInput = Input.GetAxis("Horizontal");
             _isJump = Input.GetAxis("Vertical") > 0 || Input.GetAxis("Jump") > 0;
             _isCrouch = Input.GetAxis("Vertical") < 0;
@@ -68,20 +68,15 @@ namespace Code.Controllers
                 MoveTorwards();
             }
             
-            if(IsGrounded())
+            if(_contactPooler.IsGrounded)
             {
                 _spriteAnimator.StartAnimation(_view.spriteRenderer, _isMoving ? AnimState.Run:AnimState.Idle, true);
-                
-                if(_isJump && _yVelocity <= 0)
-                {
-                    _yVelocity = _jumpSpeed;
-                }
-                else if (_yVelocity < 0)
-                {
-                    _yVelocity = float.Epsilon;
-                    _view.transform.position = _view.transform.position.Change(y : _groundedLevel);
-                }
 
+                _isdoubleJump = false;
+                if (_isJump && Mathf.Abs(_view.rigidbody.velocity.y) <= _jumpTreshold)
+                {
+                    _view.rigidbody.AddForce(Vector2.up * _jumpSpeed, ForceMode2D.Impulse);
+                }
                 if (_isCrouch)
                 {
                     _spriteAnimator.StartAnimation(_view.spriteRenderer, AnimState.Crouch, true);
@@ -89,13 +84,31 @@ namespace Code.Controllers
             }
             else
             {
-                if (Math.Abs(_yVelocity) > _jumpTreshold)
+                if (Math.Abs(_view.rigidbody.velocity.y) > _jumpTreshold)
                 {
                     _spriteAnimator.StartAnimation(_view.spriteRenderer, AnimState.Jump, true);
-                }
 
-                _yVelocity += _g * Time.deltaTime;
-                _view.transform.position += Vector3.up * (Time.deltaTime * _yVelocity);
+                    if(!_isdoubleJump && (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
+                    {                        
+                        _view.rigidbody.velocity = Vector2.zero;
+                        _view.rigidbody.AddForce(Vector2.up * _jumpSpeed, ForceMode2D.Impulse);
+                        _isdoubleJump = true;
+                    }
+
+                    if (_contactPooler.HasLeftContact || _contactPooler.HasRightContact)
+                    {
+                        if (Input.GetKeyDown(KeyCode.F))
+                        {
+                            _view.rigidbody.velocity = Vector2.zero;
+                            _view.rigidbody.gravityScale = 0.2f;
+                        }
+
+                        if (Input.GetKeyUp(KeyCode.F))
+                        {
+                            _view.rigidbody.gravityScale = 1f;
+                        }
+                    }
+                }
             }
         }
     }
