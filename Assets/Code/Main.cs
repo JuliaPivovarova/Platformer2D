@@ -15,6 +15,7 @@ namespace Code
         [SerializeField] private GameObject player;
         [SerializeField] private CannonView cannonView;
         [SerializeField] private List<LevelObjectsView> coinsViews;
+        [SerializeField] private float distanceToPlayerForCannon = 4f;
 
         private SpriteAnimatorController _playerAnimator;
         private CameraController _cameraController;
@@ -46,8 +47,8 @@ namespace Code
             _playerController = new PlayerController(_groundMove, playerView, _playerAnimator);
             _cameraController = new CameraController(playerView.transform, Camera.main.transform);
             
-            //_cannon = new CannonAimController (cannonView._muzzleTransform, playerView.transform);
-            //_bulletEmitterController = new BulletEmitterController(cannonView._bullets, cannonView._emitterTransform);
+            _cannon = new CannonAimController (cannonView._muzzleTransform, playerView.transform, distanceToPlayerForCannon);
+            _bulletEmitterController = new BulletEmitterController(cannonView._bullets, cannonView._emitterTransform, playerView.transform, distanceToPlayerForCannon);
 
             _coinsController = new CoinsController(playerView, coinsViews, _coinAnimator);
         }
@@ -56,9 +57,9 @@ namespace Code
         {
             _playerAnimator.Update();
             _playerController.Update();
-            //_cannon.Update();
-            //_bulletEmitterController.Update();
-            //_coinAnimator.Update();
+            _cannon.Update();
+            _bulletEmitterController.Update();
+            _coinAnimator.Update();
             _cameraController.Update();
         }
     }

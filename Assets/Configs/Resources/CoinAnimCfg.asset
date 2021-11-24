@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CoinAnimCfg
   m_EditorClassIdentifier: 
   Sequences:
-  - Track: 0
+  - Track: 1
     AnimSpeed: 10
     Sprites:
     - {fileID: -5678512169640294588, guid: dfd3f8c58d1635d4a825e79a832c5960, type: 3}
