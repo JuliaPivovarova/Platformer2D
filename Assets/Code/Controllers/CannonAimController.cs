@@ -10,20 +10,25 @@ namespace Code.Controllers
         private Vector3 _dir;
         private float _angle;
         private Vector3 _axes;
+        private float _distanceToAim;
 
-        public CannonAimController(Transform muzzleTransform, Transform targetTransform)
+        public CannonAimController(Transform muzzleTransform, Transform targetTransform, float distanceToAim)
         {
             _muzzleTransform = muzzleTransform;
             _targetTransform = targetTransform;
+            _distanceToAim = distanceToAim;
         }
     
         public  void Update()
         {
-            _dir = _targetTransform.position - _muzzleTransform.position;
-            _angle = Vector3.Angle(Vector3.down, _dir);
+            if (Vector3.Distance(_muzzleTransform.position, _targetTransform.position) <= _distanceToAim)
+            {
+                _dir = _targetTransform.position - _muzzleTransform.position;
+                _angle = Vector3.Angle(Vector3.down, _dir);
 
-            _axes = Vector3.Cross(Vector3.down, _dir);
-            _muzzleTransform.rotation = Quaternion.AngleAxis(_angle, _axes);
+                _axes = Vector3.Cross(Vector3.down, _dir);
+                _muzzleTransform.rotation = Quaternion.AngleAxis(_angle, _axes);
+            }
         }
     }
 }

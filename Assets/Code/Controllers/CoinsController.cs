@@ -1,41 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Config;
-using Code.Controllers;
 using Code.View;
 using UnityEngine;
 
-public class CoinsController : IDisposable
+namespace Code.Controllers
 {
-    private LevelObjectsView _playerView;
-    private SpriteAnimatorController _coinsAnimator;
-    private List<LevelObjectsView> _coinsView;
-
-    public CoinsController(LevelObjectsView player, List<LevelObjectsView> coins,
-        SpriteAnimatorController coinAnimator)
+    public class CoinsController : IDisposable
     {
-        _playerView = player;
-        _coinsAnimator = coinAnimator;
-        _coinsView = coins;
-        _playerView.OnLevelObjectContact += OnLevelObjectContact;
+        private LevelObjectsView _playerView;
+        private SpriteAnimatorController _coinsAnimator;
+        private List<LevelObjectsView> _coinsView;
 
-        foreach (LevelObjectsView coinView in _coinsView)
+        public CoinsController(LevelObjectsView player, List<LevelObjectsView> coins,
+            SpriteAnimatorController coinAnimator)
         {
-            _coinsAnimator.StartAnimation(coinView.spriteRenderer, AnimState.Run, true);
-        }
-    }
+            _playerView = player;
+            _coinsAnimator = coinAnimator;
+            _coinsView = coins;
+            _playerView.OnLevelObjectContact += OnLevelObjectContact;
 
-    private void OnLevelObjectContact(LevelObjectsView contactView)
-    {
-        if (_coinsView.Contains(contactView))
+            foreach (LevelObjectsView coinView in _coinsView)
+            {
+                _coinsAnimator.StartAnimation(coinView.spriteRenderer, AnimState.Run, true);
+            }
+        }
+
+        private void OnLevelObjectContact(LevelObjectsView contactView)
         {
-            _coinsAnimator.StopAnimation(contactView.spriteRenderer);
-            GameObject.Destroy(contactView.gameObject);
+            if (_coinsView.Contains(contactView))
+            {
+                _coinsAnimator.StopAnimation(contactView.spriteRenderer);
+                GameObject.Destroy(contactView.gameObject);
+            }
         }
-    }
 
-    public void Dispose()
-    {
-        _playerView.OnLevelObjectContact -= OnLevelObjectContact;
+        public void Dispose()
+        {
+            _playerView.OnLevelObjectContact -= OnLevelObjectContact;
+        }
     }
 }

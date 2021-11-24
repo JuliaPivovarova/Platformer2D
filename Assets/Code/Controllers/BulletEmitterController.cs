@@ -8,6 +8,8 @@ namespace Code.Controllers
     {
         private List<BulletController> _bullets = new List<BulletController>();
         private Transform _transform;
+        private Transform _playerTransform;
+        private float _distanceToTrow;
     
         private int _currentIndex;
         private float _timeTillNextBullet;
@@ -15,9 +17,11 @@ namespace Code.Controllers
         private float _delay = 1f;
         private float _startSpeed = 10f;
     
-        public BulletEmitterController (List<LevelObjectsView> bulletView, Transform transform)
+        public BulletEmitterController (List<LevelObjectsView> bulletView, Transform transform, Transform playerTransform, float distanceToTrow)
         {
             _transform = transform;
+            _playerTransform = playerTransform;
+            _distanceToTrow = distanceToTrow;
             foreach (LevelObjectsView BulletView in bulletView)
             {
                 _bullets.Add (new BulletController (BulletView));
@@ -27,21 +31,24 @@ namespace Code.Controllers
     
         public void Update()
         {
-            if (_timeTillNextBullet > 0)
+            if (Vector3.Distance(_transform.position, _playerTransform.position) <= _distanceToTrow)
             {
-                _bullets[_currentIndex].Active(false);
-                _timeTillNextBullet -= Time.deltaTime;
-            }
-            else
-            {
-                _timeTillNextBullet = _delay;
-                _bullets[_currentIndex].Trow(_transform.position, -_transform.up * _startSpeed);
-                _currentIndex++;
-                if(_currentIndex > _bullets.Count)
+                if (_timeTillNextBullet > 0)
                 {
-                    _currentIndex = 0;
+                    _bullets[_currentIndex].Active(false);
+                    _timeTillNextBullet -= Time.deltaTime;
                 }
-            }
+                else
+                {
+                    _timeTillNextBullet = _delay;
+                    _bullets[_currentIndex].Trow(_transform.position, -_transform.up * _startSpeed);
+                    _currentIndex++;
+                    if(_currentIndex >= _bullets.Count)
+                    {
+                        _currentIndex = 0;
+                    }
+                }
+            }            
         }
     }
 }
