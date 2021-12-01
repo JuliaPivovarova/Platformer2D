@@ -44,13 +44,11 @@ namespace Code
             _protectorAI.Init();
             _protectedZone = new ProtectedZone(protectedZoneTrigger, new List<IProtector> { _protectorAI });
             _protectedZone.Init();
-            _stalkerAI.Start();
         }
 
         private void FixedUpdate()
         {
             if (_simplePatrolAI != null) _simplePatrolAI.FixedUpdate();
-            if (_stalkerAI != null) _stalkerAI.FixedUpdate();
         }
 
         private void OnDestroy()

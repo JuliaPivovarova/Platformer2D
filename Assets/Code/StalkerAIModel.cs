@@ -7,7 +7,7 @@ namespace Code
     {
         private readonly AIConfig _config;
         private Path _path;
-        private int _currentPointIndex;
+        private int _currentPointIndex = 0;
 
         public StalkerAIModel(AIConfig config)
         {
@@ -23,6 +23,8 @@ namespace Code
         public Vector2 CalculateVelocity(Vector2 fromPosition)
         {
             if(_path == null) return Vector2.zero;
+            Debug.Log(_currentPointIndex);
+            Debug.Log(_path.vectorPath.Count);
             if (_currentPointIndex >= _path.vectorPath.Count) return Vector2.zero;
 
             var direction = ((Vector2)_path.vectorPath[_currentPointIndex] - fromPosition).normalized;

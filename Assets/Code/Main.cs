@@ -16,6 +16,7 @@ namespace Code
         [SerializeField] private CannonView cannonView;
         [SerializeField] private List<LevelObjectsView> coinsViews;
         [SerializeField] private float distanceToPlayerForCannon = 4f;
+        [SerializeField] private GeneratorLevelView genView;
 
         private SpriteAnimatorController _playerAnimator;
         private CameraController _cameraController;
@@ -25,6 +26,7 @@ namespace Code
         private BulletEmitterController _bulletEmitterController;
         private CannonAimController _cannon;
         private CoinsController _coinsController;
+        private GeneratorController _levelController;
 
         private void Start()
         {
@@ -51,6 +53,9 @@ namespace Code
             _bulletEmitterController = new BulletEmitterController(cannonView._bullets, cannonView._emitterTransform, playerView.transform, distanceToPlayerForCannon);
 
             _coinsController = new CoinsController(playerView, coinsViews, _coinAnimator);
+
+            _levelController = new GeneratorController(genView);
+            _levelController.Init();
         }
 
         private void Update()
