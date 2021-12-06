@@ -17,6 +17,9 @@ namespace Code
         [SerializeField] private List<LevelObjectsView> coinsViews;
         [SerializeField] private float distanceToPlayerForCannon = 4f;
         [SerializeField] private GeneratorLevelView genView;
+        [SerializeField] private QuestView questView;
+        [SerializeField] private QuestWithDoorView questWithDoorView;
+        [SerializeField] private ObjectsInBagView bagView;
 
         private SpriteAnimatorController _playerAnimator;
         private CameraController _cameraController;
@@ -27,6 +30,8 @@ namespace Code
         private CannonAimController _cannon;
         private CoinsController _coinsController;
         private GeneratorController _levelController;
+        private QuestConfiguratorController _questConfigurator;
+        private QuestWithDoorConfiguratorController _questWithDoorConfigurator;
 
         private void Start()
         {
@@ -56,6 +61,12 @@ namespace Code
 
             _levelController = new GeneratorController(genView);
             _levelController.Init();
+
+            _questConfigurator = new QuestConfiguratorController(questView);
+            _questConfigurator.Init();
+
+            _questWithDoorConfigurator = new QuestWithDoorConfiguratorController(questWithDoorView, bagView);
+            _questWithDoorConfigurator.Init();
         }
 
         private void Update()
